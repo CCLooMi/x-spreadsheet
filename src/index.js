@@ -3,7 +3,7 @@ import { h } from './component/element';
 import DataProxy from './core/data_proxy';
 import Sheet from './component/sheet';
 import Bottombar from './component/bottombar';
-import { cssPrefix } from './config';
+import Config from './config';
 import { locale } from './locale/locale';
 import './index.less';
 
@@ -31,7 +31,7 @@ class Spreadsheet {
       this.sheet.trigger('change');
     }) : null;
     this.data = this.addSheet();
-    const rootEl = h('div', `${cssPrefix}`)
+    const rootEl = h('div', `${Config.cssPrefix}`)
       .on('contextmenu', evt => evt.preventDefault());
     // create canvas element
     targetEl.appendChild(rootEl.el);
@@ -39,6 +39,7 @@ class Spreadsheet {
     if (this.bottombar !== null) {
       rootEl.child(this.bottombar.el);
     }
+    Config.containerEle = targetEl;
   }
 
   addSheet(name, active = true) {
