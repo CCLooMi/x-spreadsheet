@@ -23,7 +23,6 @@ module.exports = {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'style-loader',
           'css-loader',
         ],
       },
@@ -36,16 +35,26 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader',
-        ],
+        test: /\.(png|jpg|gif)$/,
+        type: 'asset/resource', // 让 Webpack 处理图片资源
+        generator: {
+          filename: 'assets/[hash][ext]', // 统一输出到 assets 目录
+        },
+      },
+      {
+        test: /\.svg$/,
+        type: 'asset/resource', // 让 SVG 作为静态资源输出，避免被转换成 JS 模块
+        generator: {
+          // filename: 'assets/[name].[hash][ext]', // 统一存放到 assets 目录
+          filename: 'assets/[hash][ext]', // 统一存放到 assets 目录
+        },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          'file-loader',
-        ],
+        type: 'asset/resource', // 处理字体文件
+        generator: {
+          filename: 'fonts/[hash][ext]', // 统一存放到 fonts 目录
+        },
       },
     ],
   },
