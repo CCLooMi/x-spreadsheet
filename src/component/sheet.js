@@ -19,7 +19,7 @@ import SortFilter from './sort_filter';
 import {xtoast} from './message';
 import Config, {cssPrefix} from '../config';
 import {formulas} from '../core/formula';
-import {watchDomResize, watchInDomTree, attacheEvent} from '../core/util';
+import {watchDomResize, watchInDomTree, attacheEvent, clickOutside} from '../core/util';
 
 /**
  * @desc throttle fn
@@ -720,12 +720,13 @@ function sheetInitEvents() {
     dsps.push(watchDomResize(Config.getContainerEle(), () => {
         this.reload();
     }));
+
+    attacheEvent(overlayerEl.el)
+        .on('click',evt=>this.focusing=true)
+        .getDispose(dsp=>dsps.push(dsp));
+    dsps.push(clickOutside(overlayerEl.el,evt=>this.focusing=false,false));
     attacheEvent(window)
-        .on('click', (evt) => {
-            let c = Config.getContainerEle();
-            this.focusing = overlayerEl.contains(evt.target) ||
-                (c.host || c) == evt.target;
-        }).on('paste', (evt) => {
+        .on('paste', (evt) => {
         if (!this.focusing) return;
         paste.call(this, 'all', evt);
         evt.preventDefault();

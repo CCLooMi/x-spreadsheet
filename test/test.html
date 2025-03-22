@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>X-Spreadsheet Test</title>
+    <script src="../dist/xspreadsheet.js"></script>
+</head>
+<body style="margin: 0;overflow: hidden;">
+<script>
+    const containerEl = document.createElement('s-v');
+    const sd = containerEl.attachShadow({ mode: 'open' });
+    let lk=document.createElement('link');
+    lk.rel='stylesheet';
+    lk.href='../dist/xspreadsheet.css';
+    sd.append(lk);
+    document.body.append(containerEl);
+    const xs = x_spreadsheet(sd, {
+        showToolbar: true,
+        showGrid: true,
+        showBottomBar: true,
+    });
+</script>
+</body>
+</html>
