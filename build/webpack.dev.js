@@ -12,9 +12,9 @@ module.exports = merge(common, {
     filename: '[name].[contenthash].js',
   },
   plugins: [
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, '../dist/*')], // 清理 dist 文件夹
-    }),
+    // new CleanWebpackPlugin({
+    //   cleanOnceBeforeBuildPatterns: [path.resolve(__dirname, '../dist/*')], // 清理 dist 文件夹
+    // }),
     new HtmlWebpackPlugin({
       template: './index.html', // 指定 HTML 模板
       title: 'x-spreadsheet', // 设置 HTML 标题
