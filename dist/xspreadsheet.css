@@ -466,9 +466,11 @@ body {
 }
 .x-spreadsheet-toolbar .x-spreadsheet-toolbar-btns {
   display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 .x-spreadsheet-toolbar .x-spreadsheet-toolbar-more {
-  padding: 0 6px 6px;
+  padding: 4px;
   text-align: left;
 }
 .x-spreadsheet-toolbar .x-spreadsheet-toolbar-more .x-spreadsheet-toolbar-divider {
@@ -481,7 +483,6 @@ body {
   height: 26px;
   line-height: 26px;
   min-width: 26px;
-  margin: 6px 1px 0;
   padding: 0;
   text-align: center;
   border-radius: 2px;
@@ -496,11 +497,10 @@ body {
 }
 .x-spreadsheet-toolbar-divider {
   display: inline-block;
-  border-right: 1px solid #e0e2e4;
-  width: 0;
+  background-color: #e0e2e4;
+  width: 1px;
   vertical-align: middle;
-  height: 18px;
-  margin: 12px 3px 0;
+  height: 61%;
 }
 .x-spreadsheet-print {
   position: absolute;

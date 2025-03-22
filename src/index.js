@@ -3,7 +3,7 @@ import { h } from './component/element';
 import DataProxy from './core/data_proxy';
 import Sheet from './component/sheet';
 import Bottombar from './component/bottombar';
-import Config from './config';
+import Config, {setContainerEle} from './config';
 import { locale } from './locale/locale';
 import './index.less';
 
@@ -39,7 +39,7 @@ class Spreadsheet {
     if (this.bottombar !== null) {
       rootEl.child(this.bottombar.el);
     }
-    Config.containerEle = targetEl;
+    Config.setContainerEle(targetEl);
   }
 
   addSheet(name, active = true) {

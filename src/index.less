@@ -623,10 +623,12 @@ body {
 
   .@{css-prefix}-toolbar-btns {
     display: inline-flex;
+    align-items: center;
+    gap: 2px;
   }
 
   .@{css-prefix}-toolbar-more {
-    padding: 0 6px 6px;
+    padding: 4px;
     text-align: left;
     .@{css-prefix}-toolbar-divider {
       margin-top: 0;
@@ -640,7 +642,6 @@ body {
     height: 26px;
     line-height: 26px;
     min-width: 26px;
-    margin: 6px 1px 0;
     padding: 0;
     text-align: center;
     border-radius: 2px;
@@ -658,11 +659,11 @@ body {
 
 .@{css-prefix}-toolbar-divider {
   display: inline-block;
-  border-right: 1px solid #e0e2e4;
-  width: 0;
+  //border-right: 1px solid #e0e2e4;
+  background-color: #e0e2e4;
+  width: 1px;
   vertical-align: middle;
-  height: 18px;
-  margin: 12px 3px 0;
+  height: 61%;
 }
 
 .@{css-prefix}-print {

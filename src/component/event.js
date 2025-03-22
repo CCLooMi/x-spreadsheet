@@ -1,3 +1,5 @@
+
+import Config from '../config';
 /* global window */
 export function bind(target, name, fn) {
   target.addEventListener(name, fn);
@@ -7,7 +9,7 @@ export function unbind(target, name, fn) {
 }
 export function unbindClickoutside(el) {
   if (el.xclickoutside) {
-    unbind(window.document.body, 'click', el.xclickoutside);
+    unbind(Config.getContainerEle(), 'click', el.xclickoutside);
     delete el.xclickoutside;
   }
 }
@@ -26,7 +28,7 @@ export function bindClickoutside(el, cb) {
       unbindClickoutside(el);
     }
   };
-  bind(window.document.body, 'click', el.xclickoutside);
+  bind(Config.getContainerEle(), 'click', el.xclickoutside);
 }
 export function mouseMoveUp(target, movefunc, upfunc) {
   bind(target, 'mousemove', movefunc);
