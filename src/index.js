@@ -6,7 +6,22 @@ import Bottombar from './component/bottombar';
 import Config, {setContainerEle} from './config';
 import { locale } from './locale/locale';
 import './index.less';
-
+import {uuid} from './core/util';
+if(!Object.prototype.hasOwnProperty('_uuid')){
+  Object.defineProperty(Object.prototype,'_uuid',{
+    enumerable:false,
+    get:function () {
+      if(this.__uuid===undefined){
+        Object.defineProperty(this,'__uuid',{
+          value:uuid(32),
+          enumerable:false,
+          writable:false
+        });
+      }
+      return this.__uuid;
+    }
+  });
+}
 
 class Spreadsheet {
   constructor(selectors, options = {}) {
@@ -17,6 +32,7 @@ class Spreadsheet {
     if (typeof selectors === 'string') {
       targetEl = document.querySelector(selectors);
     }
+    Config.setContainerEle(targetEl);
     this.bottombar = this.options.showBottomBar ? new Bottombar(() => {
       if (this.options.mode === 'read') return;
       const d = this.addSheet();
@@ -39,7 +55,6 @@ class Spreadsheet {
     if (this.bottombar !== null) {
       rootEl.child(this.bottombar.el);
     }
-    Config.setContainerEle(targetEl);
   }
 
   addSheet(name, active = true) {
