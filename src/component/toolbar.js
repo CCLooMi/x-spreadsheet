@@ -11,8 +11,9 @@ import DropdownAlign from './dropdown_align';
 import DropdownBorder from './dropdown_border';
 import Dropdown from './dropdown';
 import Icon from './icon';
-import { cssPrefix } from '../config';
+import Config ,{ cssPrefix } from '../config';
 import { t } from '../locale/locale';
+import {watchInDomTree,watchDomResize} from "../core/util";
 
 function buildIcon(name) {
   return new Icon(name);
@@ -173,9 +174,9 @@ export default class Toolbar {
       initBtns2.call(this);
       moreResize.call(this);
     }, 0);
-    bind(window, 'resize', () => {
+    watchInDomTree(Config.getContainerEle(),watchDomResize(Config.getContainerEle(), () => {
       moreResize.call(this);
-    });
+    }));
   }
 
   paintformatActive() {

@@ -1,5 +1,4 @@
 import { h } from './element';
-import { bindClickoutside, unbindClickoutside } from './event';
 import { cssPrefix } from '../config';
 
 function inputMovePrev(evt) {
@@ -86,7 +85,6 @@ export default class Suggest {
     this.filterItems = [];
     this.itemIndex = -1;
     el.hide();
-    unbindClickoutside(this.el.parent());
   }
 
   setItems(items) {
@@ -126,7 +124,6 @@ export default class Suggest {
     const { el } = this;
     // items[0].toggle();
     el.html('').children(...items).show();
-    bindClickoutside(el.parent(), () => { this.hide(); });
   }
 
   bindInputEvents(input) {

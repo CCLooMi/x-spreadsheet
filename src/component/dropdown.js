@@ -1,6 +1,6 @@
 import { Element, h } from './element';
-import { bindClickoutside, unbindClickoutside } from './event';
 import { cssPrefix } from '../config';
+import {clickOutside,watchDomHidden} from  '../core/util'
 
 export default class Dropdown extends Element {
   constructor(title, width, showArrow, placement, ...children) {
@@ -51,14 +51,14 @@ export default class Dropdown extends Element {
     const { contentEl } = this;
     contentEl.show();
     this.parent().active();
-    bindClickoutside(this.parent(), () => {
+    let r = clickOutside(this.parent().el,()=>{
       this.hide();
-    });
+    },false);
+    watchDomHidden(this.contentEl.el,r);
   }
 
   hide() {
     this.parent().active(false);
     this.contentEl.hide();
-    unbindClickoutside(this.parent());
   }
 }

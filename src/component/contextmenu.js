@@ -1,7 +1,7 @@
 import { h } from './element';
-import { bindClickoutside, unbindClickoutside } from './event';
 import { cssPrefix } from '../config';
 import { tf } from '../locale/locale';
+import { clickOutside,watchDomHidden,watchInDomTree } from '../core/util';
 
 const menuItems = [
   { key: 'copy', title: tf('contextmenu.copy'), label: 'Ctrl+C' },
@@ -72,7 +72,6 @@ export default class ContextMenu {
   hide() {
     const { el } = this;
     el.hide();
-    unbindClickoutside(el);
   }
 
   setPosition(x, y) {
@@ -95,6 +94,6 @@ export default class ContextMenu {
         .css('max-height', `${view.height - y}px`)
         .css('bottom', 'auto');
     }
-    bindClickoutside(el);
+    watchDomHidden(el.el,clickOutside(el.el, () => this.hide(),false));
   }
 }

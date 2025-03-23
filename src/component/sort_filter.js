@@ -1,8 +1,8 @@
 import { h } from './element';
 import Button from './button';
-import { bindClickoutside, unbindClickoutside } from './event';
 import { cssPrefix } from '../config';
 import { t } from '../locale/locale';
+import {clickOutside,watchDomHidden} from "../core/util";
 
 function buildMenu(clsName) {
   return h('div', `${cssPrefix}-item ${clsName}`);
@@ -122,12 +122,13 @@ export default class SortFilter {
   setOffset(v) {
     this.el.offset(v).show();
     let tindex = 1;
-    bindClickoutside(this.el, () => {
+    let r=clickOutside(this.el.el,() => {
       if (tindex <= 0) {
         this.hide();
       }
       tindex -= 1;
-    });
+    },false);
+    watchDomHidden(this.el.el,r);
   }
 
   show() {
@@ -136,6 +137,5 @@ export default class SortFilter {
 
   hide() {
     this.el.hide();
-    unbindClickoutside(this.el);
   }
 }

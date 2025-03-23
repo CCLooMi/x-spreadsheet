@@ -1,5 +1,4 @@
 import { h } from './element';
-import { bindClickoutside, unbindClickoutside } from './event';
 import { cssPrefix } from '../config';
 import Icon from './icon';
 import FormInput from './form_input';
@@ -7,6 +6,7 @@ import Dropdown from './dropdown';
 // Record: temp not used
 // import { xtoast } from './message';
 import { tf } from '../locale/locale';
+import {clickOutside, watchDomHidden} from "../core/util";
 
 class DropdownMore extends Dropdown {
   constructor(click) {
@@ -59,14 +59,14 @@ class ContextMenu {
   hide() {
     const { el } = this;
     el.hide();
-    unbindClickoutside(el);
   }
 
   setOffset(offset) {
     const { el } = this;
     el.offset(offset);
     el.show();
-    bindClickoutside(el);
+    let r = clickOutside(el.el,()=>this.hide(),false);
+    watchDomHidden(el.el,r);
   }
 }
 
