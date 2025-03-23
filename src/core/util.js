@@ -250,7 +250,6 @@ export function attacheEvent(ele) {
                     delete eventDispose[i];
                 }
                 eventDispose=null;
-                console.log('dispose event');
             };
             if(typeof f == 'function'){
                 f(dsp);
@@ -423,6 +422,83 @@ export const watchDomResize = (function () {
         }
     }
     return watchDomResize;
+})();
+export const watchDomHidden = (function () {
+    const watchSet={};
+    const relKey=Symbol('release');
+    const cbKey = Symbol('callbacks');
+    function watchDomHidden(ele,...callbacks) {
+        if(!ele||!(ele instanceof Node||ele instanceof Attr)){
+            return;
+        }
+        callbacks = callbacks.filter(f=>f instanceof Function);
+        if(!callbacks.length){
+            return;
+        }
+        if(!isInPage(ele)){
+            console.warn([ele,'not in page.']);
+        }
+        let _wf=watchSet[ele._uuid];
+        if(_wf){
+            let cbs=_wf[cbKey];
+            cbs.push(...callbacks);
+            return function () {
+                for(let i=0;i<callbacks.length;i++){
+                    let callback = callbacks[i];
+                    cbs.splice(cbs.indexOf(callback),1);
+                }
+                callbacks.length=0;
+                if(!cbs.length){
+                    _wf[relKey]=true;
+                }
+            };
+        }
+        let wf=function (){
+            if(isHidden(ele)){
+                for(let i=0;i<wf[cbKey].length;i++){
+                    try{
+                        wf[cbKey][i](ele);
+                        clearObjProperties(ele);
+                    }catch (e) {}
+                }
+                return true;
+            }
+            if(wf[relKey]){
+                return true;
+            }
+            return false;
+        };
+        wf[cbKey]=[...callbacks];
+        watchSet[ele._uuid]=wf;
+        if(Object.keys(watchSet).length==1){
+            startWatch();
+        }
+        return function (){
+            let cbs=wf[cbKey];
+            for(let i=0;i<callbacks.length;i++){
+                let callback = callbacks[i];
+                cbs.splice(cbs.indexOf(callback),1);
+            }
+            callbacks.length=0;
+            if(!cbs.length){
+                wf[relKey]=true;
+            }
+        };
+    }
+    function startWatch() {
+        startWatch.to&&clearTimeout(startWatch.to);
+        if(Object.keys(watchSet).length){
+            for(let p in watchSet){
+                if(watchSet[p]()){
+                    delete watchSet[p];
+                }
+            }
+        }
+        if(Object.keys(watchSet).length){
+            startWatch.to=setTimeout(startWatch,200);
+        }
+    }
+    return watchDomHidden;
 })();
 function clearObjProperties(...objs) {
     if(Array.isArray(objs[0])){
