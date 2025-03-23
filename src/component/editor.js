@@ -5,35 +5,6 @@ import Datepicker from './datepicker';
 import { cssPrefix } from '../config';
 // import { mouseMoveUp } from '../event';
 
-function resetTextareaSize() {
-  const { inputText } = this;
-  if (!/^\s*$/.test(inputText)) {
-    const {
-      textlineEl, textEl, areaOffset,
-    } = this;
-    const txts = inputText.split('\n');
-    const maxTxtSize = Math.max(...txts.map(it => it.length));
-    const tlOffset = textlineEl.offset();
-    const fontWidth = tlOffset.width / inputText.length;
-    const tlineWidth = (maxTxtSize + 1) * fontWidth + 5;
-    const maxWidth = this.viewFn().width - areaOffset.left - fontWidth;
-    let h1 = txts.length;
-    if (tlineWidth > areaOffset.width) {
-      let twidth = tlineWidth;
-      if (tlineWidth > maxWidth) {
-        twidth = maxWidth;
-        h1 += parseInt(tlineWidth / maxWidth, 10);
-        h1 += (tlineWidth % maxWidth) > 0 ? 1 : 0;
-      }
-      textEl.css('width', `${twidth}px`);
-    }
-    h1 *= this.rowHeight;
-    if (h1 > areaOffset.height) {
-      textEl.css('height', `${h1}px`);
-    }
-  }
-}
-
 function insertText({ target }, itxt) {
   const { value, selectionEnd } = target;
   const ntxt = `${value.slice(0, selectionEnd)}${itxt}${value.slice(selectionEnd)}`;
@@ -42,7 +13,6 @@ function insertText({ target }, itxt) {
 
   this.inputText = ntxt;
   this.textlineEl.html(ntxt);
-  resetTextareaSize.call(this);
 }
 
 function keydownEventHandler(evt) {
@@ -78,7 +48,6 @@ function inputEventHandler(evt) {
         }
       }
       textlineEl.html(v);
-      resetTextareaSize.call(this);
       this.change('input', v);
     } else {
       evt.target.value = cell.text || '';
@@ -100,7 +69,6 @@ function inputEventHandler(evt) {
       }
     }
     textlineEl.html(v);
-    resetTextareaSize.call(this);
     this.change('input', v);
   }
 }
@@ -278,6 +246,5 @@ export default class Editor {
     this.inputText = text;
     // console.log('text>>:', text);
     setText.call(this, text, text.length);
-    resetTextareaSize.call(this);
   }
 }
