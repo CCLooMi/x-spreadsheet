@@ -162,6 +162,9 @@ export function clickOutside(ele,actionFunc,autoRelease) {
             }
             let rect=ele.getBoundingClientRect();
             if(!(x>rect.x&&y>rect.y&&x<(rect.x+rect.width)&&y<(rect.y+rect.height))){
+                if(onClick){
+                    return;
+                }
                 actionFunc(e);
             }else{
                 //被遮挡时
