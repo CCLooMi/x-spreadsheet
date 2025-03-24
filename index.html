@@ -4,6 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title><%= htmlWebpackPlugin.options.title %></title>
+  <style>
+    html,body{
+      margin: 0;
+      overflow: hidden;
+      height: 100%;
+      position: relative;
+    }
+    #x-spreadsheet-demo{
+      border: 10px solid black;
+      box-sizing: border-box;
+      display: block;
+      height: 100%;
+    }
+  </style>
 </head>
 <body onload="load()" style="margin: 0;overflow: hidden;">
 <!--  <div style="position: fixed; right: 0; top: .3em;">-->

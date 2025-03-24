@@ -13,6 +13,7 @@ import { Validations } from './validation';
 import { CellRange } from './cell_range';
 import { expr2xy, xy2expr } from './alphabet';
 import { t } from '../locale/locale';
+import Config from '../config';
 
 // private methods
 /*
@@ -71,8 +72,14 @@ import { t } from '../locale/locale';
 const defaultSettings = {
   mode: 'edit', // edit | read
   view: {
-    height: () => document.documentElement.clientHeight,
-    width: () => document.documentElement.clientWidth,
+    height: () =>  {
+      let c= Config.getContainerEle();
+      return (c?.host||c)?.clientHeight||0;
+    },
+    width: () =>  {
+      let c= Config.getContainerEle();
+      return (c?.host||c)?.clientWidth||0;
+    },
   },
   showGrid: true,
   showToolbar: true,

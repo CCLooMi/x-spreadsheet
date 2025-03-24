@@ -26,8 +26,9 @@ import More from './more';
 import Item from './item';
 
 import { h } from '../element';
-import { cssPrefix } from '../../config';
+import Config ,{ cssPrefix } from '../../config';
 import { bind } from '../event';
+import {watchInDomTree,watchDomResize} from "../../core/util";
 
 function buildDivider() {
   return h('div', `${cssPrefix}-toolbar-divider`);
@@ -55,7 +56,6 @@ function moreResize() {
     el, btns, moreEl, btns2,
   } = this;
   const { moreBtns, contentEl } = moreEl.dd;
-  el.css('width', `${this.widthFn()}px`);
   const elBox = el.box();
 
   let sumWidth = 160;
@@ -104,10 +104,9 @@ function genBtn(it) {
 }
 
 export default class Toolbar {
-  constructor(data, widthFn, isHide = false) {
+  constructor(data, isHide = false) {
     this.data = data;
     this.change = () => {};
-    this.widthFn = widthFn;
     this.isHide = isHide;
     const style = data.defaultStyle();
     this.items = [
@@ -196,9 +195,9 @@ export default class Toolbar {
         initBtns2.call(this);
         moreResize.call(this);
       }, 0);
-      bind(window, 'resize', () => {
+      watchInDomTree(Config.getContainerEle(),watchDomResize(Config.getContainerEle(), () => {
         moreResize.call(this);
-      });
+      }));
     }
   }
 
