@@ -32,10 +32,8 @@ class Spreadsheet {
     if (typeof selectors === 'string') {
       targetEl = document.querySelector(selectors);
     }
-    const rootEl = h('div', `${cssPrefix}`)
-        .on('contextmenu', evt => evt.preventDefault());
-    this.rootEl=rootEl;
-    this.bottombar = this.options.showBottomBar ? new Bottombar(rootEl,() => {
+    this.targetEl = h(targetEl);
+    this.bottombar = this.options.showBottomBar ? new Bottombar(this.targetEl,() => {
       if (this.options.mode === 'read') return;
       const d = this.addSheet();
       this.sheet.resetData(d);
@@ -50,8 +48,10 @@ class Spreadsheet {
     }) : null;
     this.data = this.addSheet();
     // create canvas element
+    const rootEl = h('div', `${cssPrefix}`)
+        .on('contextmenu', evt => evt.preventDefault());
     targetEl.appendChild(rootEl.el);
-    this.sheet = new Sheet(rootEl, this.data);
+    this.sheet = new Sheet(this.targetEl, this.data);
     if (this.bottombar !== null) {
       rootEl.child(this.bottombar.el);
     }
@@ -59,7 +59,7 @@ class Spreadsheet {
 
   addSheet(name, active = true) {
     const n = name || `sheet${this.sheetIndex}`;
-    const d = new DataProxy(this.rootEl,n, this.options);
+    const d = new DataProxy(this.targetEl,n, this.options);
     d.change = (...args) => {
       this.sheet.trigger('change', ...args);
     };
