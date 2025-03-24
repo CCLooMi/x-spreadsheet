@@ -10,7 +10,7 @@ import { cssPrefix } from '../config';
 const fieldLabelWidth = 100;
 
 export default class ModalValidation extends Modal {
-  constructor() {
+  constructor(targetEl) {
     const mf = new FormField(
       new FormSelect('cell',
         ['cell'], // cell|row|column
@@ -63,7 +63,7 @@ export default class ModalValidation extends Modal {
       { required: true, type: 'number' },
     ).hide();
 
-    super(t('contextmenu.validation'), [
+    super(targetEl,t('contextmenu.validation'), [
       h('div', `${cssPrefix}-form-fields`).children(
         mf.el,
         rf.el,

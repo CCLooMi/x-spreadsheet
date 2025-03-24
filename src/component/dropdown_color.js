@@ -3,7 +3,7 @@ import Icon from './icon';
 import ColorPalette from './color_palette';
 
 export default class DropdownColor extends Dropdown {
-  constructor(iconName, color) {
+  constructor(targetEl,iconName, color) {
     const icon = new Icon(iconName)
       .css('height', '16px')
       .css('border-bottom', `3px solid ${color}`);
@@ -12,7 +12,7 @@ export default class DropdownColor extends Dropdown {
       this.setTitle(v);
       this.change(v);
     };
-    super(icon, 'auto', false, 'bottom-left', colorPalette.el);
+    super(targetEl,icon, 'auto', false, 'bottom-left', colorPalette.el);
   }
 
   setTitle(color) {

@@ -48,7 +48,8 @@ function buildMenu() {
 }
 
 class ContextMenu {
-  constructor() {
+  constructor(targetEl) {
+    this.targetEl = targetEl;
     this.el = h('div', `${cssPrefix}-contextmenu`)
       .css('width', '160px')
       .children(...buildMenu.call(this))
@@ -65,16 +66,17 @@ class ContextMenu {
     const { el } = this;
     el.offset(offset);
     el.show();
-    let r = clickOutside(el.el,()=>this.hide(),false);
+    let r = clickOutside(this.targetEl.el,el.el,()=>this.hide(),false);
     watchDomHidden(el.el,r);
   }
 }
 
 export default class Bottombar {
-  constructor(addFunc = () => {},
+  constructor(targetEl,addFunc = () => {},
     swapFunc = () => {},
     deleteFunc = () => {},
     updateFunc = () => {}) {
+    this.targetEl=targetEl;
     this.swapFunc = swapFunc;
     this.updateFunc = updateFunc;
     this.dataNames = [];
@@ -84,7 +86,7 @@ export default class Bottombar {
     this.moreEl = new DropdownMore((i) => {
       this.clickSwap2(this.items[i]);
     });
-    this.contextMenu = new ContextMenu();
+    this.contextMenu = new ContextMenu(this.targetEl);
     this.contextMenu.itemClick = deleteFunc;
     this.el = h('div', `${cssPrefix}-bottombar`).children(
       this.contextMenu.el,

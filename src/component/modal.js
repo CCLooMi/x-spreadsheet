@@ -2,11 +2,12 @@
 /* global window */
 import { h } from './element';
 import Icon from './icon';
-import Config ,{ cssPrefix } from '../config';
+import { cssPrefix } from '../config';
 import { bind, unbind } from './event';
 
 export default class Modal {
-  constructor(title, content, width = '600px') {
+  constructor(targetEl, title, content, width = '600px') {
+    this.targetEl = targetEl;
     this.title = title;
     this.el = h('div', `${cssPrefix}-modal`).css('width', width).children(
       h('div', `${cssPrefix}-modal-header`).children(
@@ -20,7 +21,7 @@ export default class Modal {
   show() {
     // dimmer
     this.dimmer = h('div', `${cssPrefix}-dimmer active`);
-    Config.getContainerEle().appendChild(this.dimmer.el);
+    this.targetEl.el.appendChild(this.dimmer.el);
     const { width, height } = this.el.show().box();
     const { clientHeight, clientWidth } = document.documentElement;
     this.el.offset({
@@ -37,7 +38,7 @@ export default class Modal {
 
   hide() {
     this.el.hide();
-    Config.getContainerEle().removeChild(this.dimmer.el);
+    this.targetEl.el.removeChild(this.dimmer.el);
     unbind(window, 'keydown', window.xkeydownEsc);
     delete window.xkeydownEsc;
   }

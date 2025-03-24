@@ -1,5 +1,3 @@
-import Config from "../config";
-
 const k = [1518500249, 1859775393, -1894007588, -899497514];
 function newM(m) {
     m=m||[];
@@ -145,8 +143,7 @@ export function uuid(len) {
     }
     return bytesToHex(new Uint8Array(bid));
 }
-export function clickOutside(ele,actionFunc,autoRelease) {
-    let container = Config.getContainerEle();
+export function clickOutside(container,ele,actionFunc,autoRelease) {
     if(ele===container){
         return;
     }
@@ -241,7 +238,7 @@ export function attacheEvent(ele) {
             return this;
         },
         'autoRelease':function (refEle) {
-            watchInDomTree(refEle||Config.getContainerEle(),this.getDispose());
+            watchInDomTree(refEle,this.getDispose());
         },
         'getDispose':function (f) {
             let dsp=function () {

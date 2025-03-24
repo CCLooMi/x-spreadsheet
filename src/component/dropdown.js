@@ -3,8 +3,9 @@ import { cssPrefix } from '../config';
 import {clickOutside,watchDomHidden} from  '../core/util'
 
 export default class Dropdown extends Element {
-  constructor(title, width, showArrow, placement, ...children) {
+  constructor(targetEl,title, width, showArrow, placement, ...children) {
     super('div', `${cssPrefix}-dropdown ${placement}`);
+    this.targetEl = targetEl;
     this.title = title;
     this.change = () => {};
     this.headerClick = () => {};
@@ -51,7 +52,7 @@ export default class Dropdown extends Element {
     const { contentEl } = this;
     contentEl.show();
     this.parent().active();
-    let r = clickOutside(this.parent().el,()=>{
+    let r = clickOutside(this.targetEl.el,this.parent().el,()=>{
       this.hide();
     },false);
     watchDomHidden(this.contentEl.el,r);

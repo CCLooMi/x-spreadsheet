@@ -3,7 +3,7 @@ import { h } from './component/element';
 import DataProxy from './core/data_proxy';
 import Sheet from './component/sheet';
 import Bottombar from './component/bottombar';
-import Config, {setContainerEle} from './config';
+import {cssPrefix} from './config';
 import { locale } from './locale/locale';
 import './index.less';
 import {uuid} from './core/util';
@@ -32,8 +32,10 @@ class Spreadsheet {
     if (typeof selectors === 'string') {
       targetEl = document.querySelector(selectors);
     }
-    Config.setContainerEle(targetEl);
-    this.bottombar = this.options.showBottomBar ? new Bottombar(() => {
+    const rootEl = h('div', `${cssPrefix}`)
+        .on('contextmenu', evt => evt.preventDefault());
+    this.rootEl=rootEl;
+    this.bottombar = this.options.showBottomBar ? new Bottombar(rootEl,() => {
       if (this.options.mode === 'read') return;
       const d = this.addSheet();
       this.sheet.resetData(d);
@@ -47,8 +49,6 @@ class Spreadsheet {
       this.sheet.trigger('change');
     }) : null;
     this.data = this.addSheet();
-    const rootEl = h('div', `${Config.cssPrefix}`)
-      .on('contextmenu', evt => evt.preventDefault());
     // create canvas element
     targetEl.appendChild(rootEl.el);
     this.sheet = new Sheet(rootEl, this.data);
@@ -59,7 +59,7 @@ class Spreadsheet {
 
   addSheet(name, active = true) {
     const n = name || `sheet${this.sheetIndex}`;
-    const d = new DataProxy(n, this.options);
+    const d = new DataProxy(this.rootEl,n, this.options);
     d.change = (...args) => {
       this.sheet.trigger('change', ...args);
     };

@@ -13,7 +13,6 @@ import { Validations } from './validation';
 import { CellRange } from './cell_range';
 import { expr2xy, xy2expr } from './alphabet';
 import { t } from '../locale/locale';
-import Config from '../config';
 
 // private methods
 /*
@@ -71,16 +70,6 @@ import Config from '../config';
  */
 const defaultSettings = {
   mode: 'edit', // edit | read
-  view: {
-    height: () =>  {
-      let c= Config.getContainerEle();
-      return (c?.host||c)?.clientHeight||0;
-    },
-    width: () =>  {
-      let c= Config.getContainerEle();
-      return (c?.host||c)?.clientWidth||0;
-    },
-  },
   showGrid: true,
   showToolbar: true,
   showContextmenu: true,
@@ -330,7 +319,8 @@ function getCellColByX(x, scrollOffsetx) {
 }
 
 export default class DataProxy {
-  constructor(name, settings) {
+  constructor(targetEl,name, settings) {
+    this.targetEl = targetEl;
     this.settings = helper.merge(defaultSettings, settings || {});
     // save data begin
     this.name = name || 'sheet';
@@ -1073,8 +1063,9 @@ export default class DataProxy {
   }
 
   viewHeight() {
-    const { view, showToolbar, showBottomBar } = this.settings;
-    let h = view.height();
+    const { showToolbar, showBottomBar } = this.settings;
+    let c = this.targetEl.el;
+    let h = (c?.host||c)?.clientHeight||0;
     if (showBottomBar) {
       h -= bottombarHeight;
     }
@@ -1085,7 +1076,8 @@ export default class DataProxy {
   }
 
   viewWidth() {
-    return this.settings.view.width();
+    let c = this.targetEl.el;
+    return (c?.host||c)?.clientWidth||0;
   }
 
   freezeViewRange() {

@@ -47,7 +47,8 @@ function buildMenu() {
 }
 
 export default class ContextMenu {
-  constructor(viewFn, isHide = false) {
+  constructor(targetEl,viewFn, isHide = false) {
+    this.targetEl = targetEl;
     this.menuItems = buildMenu.call(this);
     this.el = h('div', `${cssPrefix}-contextmenu`)
       .children(...this.menuItems)
@@ -94,6 +95,6 @@ export default class ContextMenu {
         .css('max-height', `${view.height - y}px`)
         .css('bottom', 'auto');
     }
-    watchDomHidden(el.el,clickOutside(el.el, () => this.hide(),false));
+    watchDomHidden(el.el,clickOutside(this.targetEl.el,el.el, () => this.hide(),false));
   }
 }

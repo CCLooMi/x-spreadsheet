@@ -33,7 +33,8 @@ function resetFilterHeader() {
 }
 
 export default class SortFilter {
-  constructor() {
+  constructor(targetEl) {
+    this.targetEl = targetEl;
     this.filterbEl = h('div', `${cssPrefix}-body`);
     this.filterhEl = h('div', `${cssPrefix}-header state`).on('click.stop', () => this.filterClick(0, 'all'));
     this.el = h('div', `${cssPrefix}-sort-filter`).children(
@@ -122,7 +123,7 @@ export default class SortFilter {
   setOffset(v) {
     this.el.offset(v).show();
     let tindex = 1;
-    let r=clickOutside(this.el.el,() => {
+    let r=clickOutside(this.targetEl.el,this.el.el,() => {
       if (tindex <= 0) {
         this.hide();
       }

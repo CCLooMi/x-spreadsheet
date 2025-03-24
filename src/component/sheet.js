@@ -17,7 +17,7 @@ import Toolbar from './toolbar/index';
 import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
 import {xtoast} from './message';
-import Config, {cssPrefix} from '../config';
+import {cssPrefix} from '../config';
 import {formulas} from '../core/formula';
 import {watchDomResize, watchInDomTree, attacheEvent, clickOutside} from '../core/util';
 
@@ -341,7 +341,7 @@ function paste(what, evt) {
         // pastFromSystemClipboard is async operation, need to tell it how to reset sheet and trigger event after it finishes
         // pasting content from system clipboard
         data.pasteFromSystemClipboard(resetSheet, eventTrigger);
-    } else if (data.paste(what, msg => xtoast('Tip', msg))) {
+    } else if (data.paste(what, msg => xtoast(this.targetEl,'Tip', msg))) {
         sheetReset.call(this);
     } else if (evt) {
         const cdata = evt.clipboardData.getData('text/plain');
@@ -410,7 +410,7 @@ function overlayerMousedown(evt) {
         }
 
         // mouse move up
-        mouseMoveUp(Config.getContainerEle(), (e) => {
+        mouseMoveUp(this.targetEl.el, (e) => {
             // console.log('mouseMoveUp::::');
             ({ri, ci} = data.getCellRectByXY(e.offsetX, e.offsetY));
             if (isAutofillEl) {
@@ -420,7 +420,7 @@ function overlayerMousedown(evt) {
             }
         }, () => {
             if (isAutofillEl && selector.arange && data.settings.mode !== 'read') {
-                if (data.autofill(selector.arange, 'all', msg => xtoast('Tip', msg))) {
+                if (data.autofill(selector.arange, 'all', msg => xtoast(this.targetEl,'Tip', msg))) {
                     table.render();
                 }
             }
@@ -717,14 +717,14 @@ function sheetInitEvents() {
         }
     };
 
-    dsps.push(watchDomResize(Config.getContainerEle(), () => {
+    dsps.push(watchDomResize(this.targetEl.el, () => {
         this.reload();
     }));
 
     attacheEvent(overlayerEl.el)
         .on('click',evt=>this.focusing=true)
         .getDispose(dsp=>dsps.push(dsp));
-    dsps.push(clickOutside(overlayerEl.el,evt=>this.focusing=false,false));
+    dsps.push(clickOutside(this.targetEl.el,overlayerEl.el,evt=>this.focusing=false,false));
     attacheEvent(window)
         .on('paste', (evt) => {
         if (!this.focusing) return;
@@ -882,17 +882,18 @@ function sheetInitEvents() {
     }).getDispose(function (d) {
         dsps.push(d);
     });
-    watchInDomTree(Config.getContainerEle(), function () {
+    watchInDomTree(this.targetEl.el, function () {
         while (dsps.length) dsps.pop()();
     });
 }
 
 export default class Sheet {
     constructor(targetEl, data) {
+        this.targetEl = targetEl;
         this.eventMap = createEventEmitter();
         const {view, showToolbar, showContextmenu} = data.settings;
         this.el = h('div', `${cssPrefix}-sheet`);
-        this.toolbar = new Toolbar(data, !showToolbar);
+        this.toolbar = new Toolbar(targetEl,data, !showToolbar);
         this.print = new Print(data);
         targetEl.children(this.toolbar.el, this.el, this.print.el);
         this.data = data;
@@ -911,9 +912,9 @@ export default class Sheet {
             data.rows.height,
         );
         // data validation
-        this.modalValidation = new ModalValidation();
+        this.modalValidation = new ModalValidation(targetEl);
         // contextMenu
-        this.contextMenu = new ContextMenu(() => this.getRect(), !showContextmenu);
+        this.contextMenu = new ContextMenu(targetEl,() => this.getRect(), !showContextmenu);
         // selector
         this.selector = new Selector(data);
         this.overlayerCEl = h('div', `${cssPrefix}-overlayer-content`)
@@ -924,7 +925,7 @@ export default class Sheet {
         this.overlayerEl = h('div', `${cssPrefix}-overlayer`)
             .child(this.overlayerCEl);
         // sortFilter
-        this.sortFilter = new SortFilter();
+        this.sortFilter = new SortFilter(this.targetEl);
         // root element
         this.el.children(
             this.tableEl,

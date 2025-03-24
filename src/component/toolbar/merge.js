@@ -1,8 +1,8 @@
 import ToggleItem from './toggle_item';
 
 export default class Merge extends ToggleItem {
-  constructor() {
-    super('merge');
+  constructor(targetEl) {
+    super(targetEl,'merge');
   }
 
   setState(active, disabled) {
