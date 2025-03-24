@@ -68,6 +68,8 @@ const message = {
     paste: 'Einfügen',
     pasteValue: 'Nur Werte einfügen',
     pasteFormat: 'Nur Format einfügen',
+    pasteColsToRows: 'Nur Spalten in Zeilen einfügen',
+    pasteRowsToCols: 'Nur Zeilen in Spalten einfügen',
     insertRow: 'Zeile einfügen',
     insertColumn: 'Spalte einfügen',
     deleteRow: 'Zeile löschen',

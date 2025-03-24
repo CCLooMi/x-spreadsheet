@@ -70,6 +70,8 @@ const message = {
     paste: 'Paste',
     pasteValue: 'Paste values only',
     pasteFormat: 'Paste format only',
+    pasteColsToRows: 'Paste columns to rows',
+    pasteRowsToCols: 'Paste rows to columns',
     hide: 'Hide',
     insertRow: 'Insert row',
     insertColumn: 'Insert column',

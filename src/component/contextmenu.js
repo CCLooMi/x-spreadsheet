@@ -9,6 +9,8 @@ const menuItems = [
   { key: 'paste', title: tf('contextmenu.paste'), label: 'Ctrl+V' },
   { key: 'paste-value', title: tf('contextmenu.pasteValue'), label: 'Ctrl+Shift+V' },
   { key: 'paste-format', title: tf('contextmenu.pasteFormat'), label: 'Ctrl+Alt+V' },
+  {key:'paste-cols-to-rows', title: tf('contextmenu.pasteColsToRows')},
+  {key:'paste-rows-to-cols', title: tf('contextmenu.pasteRowsToCols')},
   { key: 'divider' },
   { key: 'insert-row', title: tf('contextmenu.insertRow') },
   { key: 'insert-column', title: tf('contextmenu.insertColumn') },

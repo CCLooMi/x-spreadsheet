@@ -457,10 +457,13 @@ export default class DataProxy {
     return true;
   }
 
-  pasteFromSystemClipboard(resetSheet, eventTrigger) {
+  pasteFromSystemClipboard(resetSheet, eventTrigger,what) {
     const { selector } = this;
     navigator.clipboard.readText().then((content) => {
-      const contentToPaste = this.parseClipboardContent(content);
+      let contentToPaste = this.parseClipboardContent(content);
+      if(what==='colsToRows'||what==='rowsToCols'){
+        contentToPaste=this.transposeArray(contentToPaste);
+      }
       let startRow = selector.ri;
       contentToPaste.forEach((row) => {
         let startColumn = selector.ci;
@@ -474,12 +477,24 @@ export default class DataProxy {
       eventTrigger(this.rows.getData());
     });
   }
-
+  transposeArray(array) {
+    if (array.length === 0) return [];
+    const rows = array.length;
+    const cols = array[0].length;
+    const transposed = [];
+    for (let j = 0; j < cols; j++) {
+      transposed[j] = [];
+      for (let i = 0; i < rows; i++) {
+        transposed[j][i] = array[i][j] || ''; // 处理可能存在的空值
+      }
+    }
+    return transposed;
+  }
   parseClipboardContent(clipboardContent) {
     const parsedData = [];
 
     // first we need to figure out how many rows we need to paste
-    const rows = clipboardContent.split('\n');
+    const rows = clipboardContent.split(/[\r]?[\n]/g);
 
     // for each row parse cell data
     let i = 0;

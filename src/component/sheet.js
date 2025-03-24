@@ -331,6 +331,7 @@ function cut() {
 }
 
 function paste(what, evt) {
+    console.log('paste',what,evt);
     const {data} = this;
     if (data.settings.mode === 'read') return;
     if (data.clipboard.isClear()) {
@@ -340,7 +341,7 @@ function paste(what, evt) {
         };
         // pastFromSystemClipboard is async operation, need to tell it how to reset sheet and trigger event after it finishes
         // pasting content from system clipboard
-        data.pasteFromSystemClipboard(resetSheet, eventTrigger);
+        data.pasteFromSystemClipboard(resetSheet, eventTrigger,what);
     } else if (data.paste(what, msg => xtoast(this.targetEl,'Tip', msg))) {
         sheetReset.call(this);
     } else if (evt) {
@@ -710,6 +711,10 @@ function sheetInitEvents() {
             paste.call(this, 'text');
         } else if (type === 'paste-format') {
             paste.call(this, 'format');
+        } else if (type === 'paste-cols-to-rows') {
+            paste.call(this, 'colsToRows');
+        } else if (type === 'paste-rows-to-cols') {
+            paste.call(this, 'rowsToCols');
         } else if (type === 'hide') {
             hideRowsOrCols.call(this);
         } else {

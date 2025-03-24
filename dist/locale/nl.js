@@ -68,6 +68,8 @@ const message = {
     paste: 'Plakken',
     pasteValue: 'Alleen waarden plakken',
     pasteFormat: 'Alleen opmaak plakken',
+    pasteColsToRows: 'Alleen kolommen plakken',
+    pasteRowsToCols: 'Alleen rijen plakken',
     insertRow: 'Rij invoegen',
     insertColumn: 'Kolom invoegen',
     deleteRow: 'Rij verwijderen',
