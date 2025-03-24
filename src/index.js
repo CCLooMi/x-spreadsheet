@@ -33,7 +33,9 @@ class Spreadsheet {
       targetEl = document.querySelector(selectors);
     }
     this.targetEl = h(targetEl);
-    this.bottombar = this.options.showBottomBar ? new Bottombar(this.targetEl,() => {
+    const rootEl = h('div', `${cssPrefix}`)
+        .on('contextmenu', evt => evt.preventDefault());
+    this.bottombar = this.options.showBottomBar ? new Bottombar(rootEl,() => {
       if (this.options.mode === 'read') return;
       const d = this.addSheet();
       this.sheet.resetData(d);
@@ -48,10 +50,8 @@ class Spreadsheet {
     }) : null;
     this.data = this.addSheet();
     // create canvas element
-    const rootEl = h('div', `${cssPrefix}`)
-        .on('contextmenu', evt => evt.preventDefault());
     targetEl.appendChild(rootEl.el);
-    this.sheet = new Sheet(this.targetEl, this.data);
+    this.sheet = new Sheet(rootEl, this.data);
     if (this.bottombar !== null) {
       rootEl.child(this.bottombar.el);
     }

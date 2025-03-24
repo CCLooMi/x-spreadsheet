@@ -9,9 +9,9 @@ import { tf } from '../locale/locale';
 import {clickOutside, watchDomHidden} from "../core/util";
 
 class DropdownMore extends Dropdown {
-  constructor(click) {
+  constructor(targetEl,click) {
     const icon = new Icon('ellipsis');
-    super(icon, 'auto', false, 'top-left');
+    super(targetEl,icon, 'auto', false, 'top-left');
     this.contentClick = click;
   }
 
@@ -83,7 +83,7 @@ export default class Bottombar {
     this.activeEl = null;
     this.deleteEl = null;
     this.items = [];
-    this.moreEl = new DropdownMore((i) => {
+    this.moreEl = new DropdownMore(targetEl,(i) => {
       this.clickSwap2(this.items[i]);
     });
     this.contextMenu = new ContextMenu(this.targetEl);

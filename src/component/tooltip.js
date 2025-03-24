@@ -13,9 +13,10 @@ export default function tooltip(targetEl,html, target) {
   const el = h('div', `${cssPrefix}-tooltip`).html(html).show();
   targetEl.el.appendChild(el.el);
   const elBox = el.box();
+  const tgBox = targetEl.box();
   // console.log('elBox:', elBox);
-  el.css('left', `${left + (width / 2) - (elBox.width / 2)}px`)
-    .css('top', `${top + height + 2}px`);
+  el.css('left', `${left-tgBox.left + (width / 2) - (elBox.width / 2)}px`)
+    .css('top', `${top-tgBox.top + height + 2}px`);
 
   bind(target, 'mouseleave', () => {
     if (targetEl.el.contains(el.el)) {
