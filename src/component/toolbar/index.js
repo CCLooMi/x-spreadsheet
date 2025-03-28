@@ -195,10 +195,10 @@ export default class Toolbar {
       setTimeout(() => {
         initBtns2.call(this);
         moreResize.call(this);
+        watchInDomTree(this.targetEl.el,watchDomResize(this.targetEl.el, () => {
+          moreResize.call(this);
+        }));
       }, 0);
-      watchInDomTree(this.targetEl.el,watchDomResize(this.targetEl.el, () => {
-        moreResize.call(this);
-      }));
     }
   }
 

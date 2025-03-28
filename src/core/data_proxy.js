@@ -457,13 +457,55 @@ export default class DataProxy {
     return true;
   }
 
+  parseHtmlTable(html){
+    let tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    let table = tempDiv.querySelector("table");
+    if (!table) {
+      return this.parseClipboardContent(tempDiv.innerText);
+    }
+    let rows = table.querySelectorAll("tr");
+    let data = [];
+    rows.forEach(row => {
+      let rowData = [];
+      let cells = row.querySelectorAll("td, th");
+      cells.forEach(cell => {
+        rowData.push(cell.innerText.trim());
+      });
+      data.push(rowData);
+    });
+    return data;
+  }
   pasteFromSystemClipboard(resetSheet, eventTrigger,what) {
     const { selector } = this;
-    navigator.clipboard.readText().then((content) => {
-      let contentToPaste = this.parseClipboardContent(content);
+    navigator.clipboard.read().then((items) => {
+      for(const item of items){
+        console.log(item);
+        if (item.types.includes('text/html')) {
+          item.getType('text/html').then(htmlBlob=>{
+            htmlBlob.text().then(html=>{
+              let contentToPaste = this.parseHtmlTable(html);
+              applyPasteData(contentToPaste,what);
+            });
+          });
+          return;
+        }
+        if(item.types.includes('text/plain')){
+          item.getType('text/plain').then(txtBlob=>{
+            txtBlob.text().then(content=>{
+              let contentToPaste = this.parseClipboardContent(content);
+              applyPasteData(contentToPaste,what);
+            })
+          });
+          return;
+        }
+      }
+    })
+    const applyPasteData=(contentToPaste,what)=> {
       if(what==='colsToRows'||what==='rowsToCols'){
         contentToPaste=this.transposeArray(contentToPaste);
       }
+      this.autoInsertColsRows(contentToPaste);
       let startRow = selector.ri;
       contentToPaste.forEach((row) => {
         let startColumn = selector.ci;
@@ -475,7 +517,21 @@ export default class DataProxy {
       });
       resetSheet();
       eventTrigger(this.rows.getData());
-    });
+    }
+  }
+  autoInsertColsRows(contentToPaste){
+    let {selector,rows,cols} = this;
+    let rn = contentToPaste.length;
+    let cn = contentToPaste[0].length;
+    let {ri,ci} = selector;
+    let addCn = cn-cols.len+ci;
+    if(addCn>0){
+      cols.len+=addCn;
+    }
+    let addRn = rn-rows.len+ri;
+    if(addRn>0){
+      rows.len+=addRn;
+    }
   }
   transposeArray(array) {
     if (array.length === 0) return [];
