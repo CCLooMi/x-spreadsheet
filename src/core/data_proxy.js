@@ -481,6 +481,21 @@ export default class DataProxy {
     navigator.clipboard.read().then((items) => {
       for(const item of items){
         console.log(item);
+        for(let i=0;i<item.types.length;i++){
+            let ti = item.types[i];
+            if(ti.startsWith('image/')){
+                item.getType(ti).then(blob=>{
+                  // this.insertImage(blob,resetSheet,eventTrigger);
+                  let img = document.createElement('img');
+                  img.src = URL.createObjectURL(blob);
+                  this.setSelectedCellAttr("image",img);
+                  console.log(img.src);
+                  resetSheet();
+                  eventTrigger(this.rows.getData());
+                });
+                return;
+            }
+        }
         if (item.types.includes('text/html')) {
           item.getType('text/html').then(htmlBlob=>{
             htmlBlob.text().then(html=>{

@@ -197,7 +197,72 @@ class Draw {
     this.ctx.fillText(text, npx(x), npx(y));
     return this;
   }
+  /*
+      img: Image对象或URL字符串
+      box: DrawBox
+      attr: {
+        align: left | center | right
+        valign: top | middle | bottom
+        scale: 缩放比例 (可选)
+        keepAspect: 是否保持宽高比 (默认true)
+      }
+    */
+  image(img, box, attr = {}) {
+    const { ctx } = this;
+    const {
+      align = 'left',
+      valign = 'top',
+      scale = 1,
+      keepAspect = true
+    } = attr;
 
+    ctx.save();
+    ctx.beginPath();
+
+    // 如果是字符串URL，先创建Image对象
+    if (typeof img === 'string') {
+      const imageObj = new Image();
+      imageObj.src = img;
+      img = imageObj;
+    }
+
+    // 计算图片位置和尺寸
+    const boxWidth = box.innerWidth();
+    const boxHeight = box.innerHeight();
+    let imgWidth = img.width * scale;
+    let imgHeight = img.height * scale;
+
+    // 保持宽高比
+    if (keepAspect) {
+      const ratio = Math.min(boxWidth / img.width, boxHeight / img.height) * scale;
+      imgWidth = img.width * ratio;
+      imgHeight = img.height * ratio;
+    }
+
+    // 计算对齐位置
+    let x = box.x + box.padding;
+    let y = box.y + box.padding;
+
+    if (align === 'center') {
+      x = box.x + (box.width - imgWidth) / 2;
+    } else if (align === 'right') {
+      x = box.x + box.width - imgWidth - box.padding;
+    }
+
+    if (valign === 'middle') {
+      y = box.y + (box.height - imgHeight) / 2;
+    } else if (valign === 'bottom') {
+      y = box.y + box.height - imgHeight - box.padding;
+    }
+
+    // 绘制图片
+    ctx.rect(npxLine(box.x + 1), npxLine(box.y + 1), npx(box.width - 2), npx(box.height - 2));
+    ctx.clip();
+    ctx.drawImage(img, npx(x), npx(y), npx(imgWidth), npx(imgHeight));
+
+    ctx.restore();
+    return this;
+  }
   /*
     txt: render text
     box: DrawBox

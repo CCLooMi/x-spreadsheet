@@ -69,42 +69,69 @@ export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
   dbox.bgcolor = style.bgcolor;
   if (style.border !== undefined) {
     dbox.setBorders(style.border);
-    // bboxes.push({ ri: rindex, ci: cindex, box: dbox });
     draw.strokeBorders(dbox);
   }
+
   draw.rect(dbox, () => {
-    // render text
-    let cellText = '';
-    if (!data.settings.evalPaused) {
-      cellText = _cell.render(cell.text || '', formulam, (y, x) => (data.getCellTextOrDefault(x, y)));
+    // 检查是否有图片
+    if (cell.image) {
+      // 渲染图片
+      draw.image(cell.image, dbox, {
+        align: style.align,
+        valign: style.valign,
+        scale: cell.imageScale || 1,
+        keepAspect: cell.keepAspect !== false
+      });
+
+      // 如果有文字，在图片下方渲染
+      if (cell.text) {
+        const textDbox = new DrawBox(
+            dbox.x,
+            dbox.y + dbox.height * 0.7, // 图片占据70%高度
+            dbox.width,
+            dbox.height * 0.3, // 文字占据30%高度
+            cellPaddingWidth
+        );
+        renderCellText(draw, data, cell, textDbox, style);
+      }
     } else {
-      cellText = cell.text || '';
+      // 没有图片，正常渲染文本
+      renderCellText(draw, data, cell, dbox, style);
     }
-    if (style.format) {
-      // console.log(data.formatm, '>>', cell.format);
-      cellText = formatm[style.format].render(cellText);
-    }
-    const font = Object.assign({}, style.font);
-    font.size = getFontSizePxByPt(font.size);
-    // console.log('style:', style);
-    draw.text(cellText, dbox, {
-      align: style.align,
-      valign: style.valign,
-      font,
-      color: style.color,
-      strike: style.strike,
-      underline: style.underline,
-    }, style.textwrap);
+
     // error
     const error = data.validations.getError(rindex, cindex);
     if (error) {
-      // console.log('error:', rindex, cindex, error);
       draw.error(dbox);
     }
     if (frozen) {
       draw.frozen(dbox);
     }
   });
+}
+
+// 提取文本渲染逻辑到单独函数
+function renderCellText(draw, data, cell, dbox, style) {
+  let cellText = '';
+  if (!data.settings.evalPaused) {
+    cellText = _cell.render(cell.text || '', formulam, (y, x) => (data.getCellTextOrDefault(x, y)));
+  } else {
+    cellText = cell.text || '';
+  }
+  if (style.format) {
+    cellText = formatm[style.format].render(cellText);
+  }
+  const font = Object.assign({}, style.font);
+  font.size = getFontSizePxByPt(font.size);
+
+  draw.text(cellText, dbox, {
+    align: style.align,
+    valign: style.valign,
+    font,
+    color: style.color,
+    strike: style.strike,
+    underline: style.underline,
+  }, style.textwrap);
 }
 
 function renderAutofilter(viewRange) {
