@@ -478,20 +478,40 @@ export default class DataProxy {
   }
   pasteFromSystemClipboard(resetSheet, eventTrigger,what) {
     const { selector } = this;
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => {
+          console.error('Failed to load image:', src);
+          resolve(null);
+        };
+
+        if (typeof src === 'string') {
+          img.src = src;
+        } else if (src instanceof Blob) {
+          img.src = URL.createObjectURL(src);
+        } else {
+          resolve(null);
+        }
+      });
+    }
     navigator.clipboard.read().then((items) => {
       for(const item of items){
-        console.log(item);
         for(let i=0;i<item.types.length;i++){
             let ti = item.types[i];
             if(ti.startsWith('image/')){
                 item.getType(ti).then(blob=>{
                   // this.insertImage(blob,resetSheet,eventTrigger);
-                  let img = document.createElement('img');
-                  img.src = URL.createObjectURL(blob);
-                  this.setSelectedCellAttr("image",img);
-                  console.log(img.src);
-                  resetSheet();
-                  eventTrigger(this.rows.getData());
+                  loadImage(blob).then(img=>{
+                    if(!img){
+                      return;
+                    }
+                    this.setSelectedCellAttr("image",img);
+                    this.setSelectedCellAttr("blob",blob);
+                    resetSheet();
+                    eventTrigger(this.rows.getData());
+                  });
                 });
                 return;
             }
