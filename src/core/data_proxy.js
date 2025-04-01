@@ -502,7 +502,6 @@ export default class DataProxy {
             let ti = item.types[i];
             if(ti.startsWith('image/')){
                 item.getType(ti).then(blob=>{
-                  // this.insertImage(blob,resetSheet,eventTrigger);
                   loadImage(blob).then(img=>{
                     if(!img){
                       return;

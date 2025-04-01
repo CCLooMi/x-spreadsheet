@@ -1,6 +1,13 @@
 /* eslint-disable no-param-reassign */
 function cloneDeep(obj) {
-  return JSON.parse(JSON.stringify(obj));
+  let newObj = JSON.parse(JSON.stringify(obj));
+  for(const k in obj) {
+      let v=obj[k];
+      if(v instanceof Blob||v instanceof Node){
+        newObj[k]=v;
+      }
+  }
+  return newObj;
 }
 
 const mergeDeep = (object = {}, ...sources) => {
