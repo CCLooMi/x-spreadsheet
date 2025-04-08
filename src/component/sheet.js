@@ -14,7 +14,6 @@ import Print from './print';
 import ContextMenu from './contextmenu';
 import Table from './table';
 import Toolbar from './toolbar/index';
-import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
 import {xtoast} from './message';
 import {cssPrefix} from '../config';
@@ -608,7 +607,6 @@ function sheetInitEvents() {
         editor,
         contextMenu,
         toolbar,
-        modalValidation,
         sortFilter,
     } = this;
     // overlayer
@@ -687,20 +685,10 @@ function sheetInitEvents() {
     editor.change = (state, itext) => {
         dataSetCellText.call(this, itext, state);
     };
-    // modal validation
-    modalValidation.change = (action, ...args) => {
-        if (action === 'save') {
-            this.data.addValidation(...args);
-        } else {
-            this.data.removeValidation();
-        }
-    };
     // contextmenu
     contextMenu.itemClick = (type) => {
         // console.log('type:', type);
-        if (type === 'validation') {
-            modalValidation.setValue(this.data.getSelectedValidation());
-        } else if (type === 'copy') {
+        if (type === 'copy') {
             copy.call(this);
         } else if (type === 'cut') {
             cut.call(this);
@@ -915,8 +903,6 @@ export default class Sheet {
             () => this.getTableOffset(),
             data.rows.height,
         );
-        // data validation
-        this.modalValidation = new ModalValidation(targetEl);
         // contextMenu
         this.contextMenu = new ContextMenu(targetEl,() => this.getRect(), !showContextmenu);
         // selector
@@ -939,7 +925,6 @@ export default class Sheet {
             this.verticalScrollbar.el,
             this.horizontalScrollbar.el,
             this.contextMenu.el,
-            this.modalValidation.el,
             this.sortFilter.el,
         );
         // table

@@ -129,11 +129,6 @@ class Spreadsheet {
     return this;
   }
 
-  validate() {
-    const { validations } = this.data;
-    return validations.errors.size <= 0;
-  }
-
   change(cb) {
     this.sheet.on('change', cb);
     return this;

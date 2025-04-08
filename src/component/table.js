@@ -98,12 +98,6 @@ export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
       // 没有图片，正常渲染文本
       renderCellText(draw, data, cell, dbox, style);
     }
-
-    // error
-    const error = data.validations.getError(rindex, cindex);
-    if (error) {
-      draw.error(dbox);
-    }
     if (frozen) {
       draw.frozen(dbox);
     }

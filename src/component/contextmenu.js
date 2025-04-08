@@ -20,8 +20,6 @@ const menuItems = [
   { key: 'delete-cell-text', title: tf('contextmenu.deleteCellText') },
   { key: 'hide', title: tf('contextmenu.hide') },
   { key: 'divider' },
-  { key: 'validation', title: tf('contextmenu.validation') },
-  { key: 'divider' },
   { key: 'cell-printable', title: tf('contextmenu.cellprintable') },
   { key: 'cell-non-printable', title: tf('contextmenu.cellnonprintable') },
   { key: 'divider' },

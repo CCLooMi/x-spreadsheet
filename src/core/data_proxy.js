@@ -9,7 +9,6 @@ import { Merges } from './merge';
 import helper from './helper';
 import { Rows } from './row';
 import { Cols } from './col';
-import { Validations } from './validation';
 import { CellRange } from './cell_range';
 import { expr2xy, xy2expr } from './alphabet';
 import { t } from '../locale/locale';
@@ -329,7 +328,6 @@ export default class DataProxy {
     this.merges = new Merges(); // [CellRange, ...]
     this.rows = new Rows(this.settings.row);
     this.cols = new Cols(this.settings.col);
-    this.validations = new Validations();
     this.hyperlinks = {};
     this.comments = {};
     // save data end
@@ -344,37 +342,6 @@ export default class DataProxy {
     this.exceptRowSet = new Set();
     this.sortedRowMap = new Map();
     this.unsortedRowMap = new Map();
-  }
-
-  addValidation(mode, ref, validator) {
-    // console.log('mode:', mode, ', ref:', ref, ', validator:', validator);
-    this.changeData(() => {
-      this.validations.add(mode, ref, validator);
-    });
-  }
-
-  removeValidation() {
-    const { range } = this.selector;
-    this.changeData(() => {
-      this.validations.remove(range);
-    });
-  }
-
-  getSelectedValidator() {
-    const { ri, ci } = this.selector;
-    const v = this.validations.get(ri, ci);
-    return v ? v.validator : null;
-  }
-
-  getSelectedValidation() {
-    const { ri, ci, range } = this.selector;
-    const v = this.validations.get(ri, ci);
-    const ret = { ref: range.toString() };
-    if (v !== null) {
-      ret.mode = v.mode;
-      ret.validator = v.validator;
-    }
-    return ret;
   }
 
   canUndo() {
@@ -1123,7 +1090,7 @@ export default class DataProxy {
 
   // state: input | finished
   setCellText(ri, ci, text, state) {
-    const { rows, history, validations } = this;
+    const { rows, history } = this;
     if (state === 'finished') {
       rows.setCellText(ri, ci, '');
       history.add(this.getData());
@@ -1132,8 +1099,6 @@ export default class DataProxy {
       rows.setCellText(ri, ci, text);
       this.change(this.getData());
     }
-    // validator
-    validations.validate(ri, ci, text);
   }
 
   freezeIsActive() {
@@ -1329,7 +1294,7 @@ export default class DataProxy {
   setData(d) {
     Object.keys(d).forEach((property) => {
       if (property === 'merges' || property === 'rows'
-        || property === 'cols' || property === 'validations') {
+        || property === 'cols') {
         this[property].setData(d[property]);
       } else if (property === 'freeze') {
         const [x, y] = expr2xy(d[property]);
@@ -1345,7 +1310,7 @@ export default class DataProxy {
 
   getData() {
     const {
-      name, freeze, styles, merges, rows, cols, validations, autoFilter,
+      name, freeze, styles, merges, rows, cols, autoFilter,
     } = this;
     return {
       name,
@@ -1354,7 +1319,6 @@ export default class DataProxy {
       merges: merges.getData(),
       rows: rows.getData(),
       cols: cols.getData(),
-      validations: validations.getData(),
       autofilter: autoFilter.getData(),
     };
   }
