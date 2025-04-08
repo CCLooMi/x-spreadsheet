@@ -28,24 +28,16 @@ function keydownEventHandler(evt) {
 function inputEventHandler(evt) {
   const v = evt.target.value;
   // console.log(evt, 'v:', v);
-  const { suggest, textlineEl, validator } = this;
+  const { suggest, textlineEl } = this;
   const { cell } = this;
   if (cell !== null) {
     if (('editable' in cell && cell.editable === true) || (cell.editable === undefined)) {
       this.inputText = v;
-      if (validator) {
-        if (validator.type === 'list') {
-          suggest.search(v);
-        } else {
-          suggest.hide();
-        }
+      const start = v.lastIndexOf('=');
+      if (start !== -1) {
+        suggest.search(v.substring(start + 1));
       } else {
-        const start = v.lastIndexOf('=');
-        if (start !== -1) {
-          suggest.search(v.substring(start + 1));
-        } else {
-          suggest.hide();
-        }
+        suggest.hide();
       }
       textlineEl.html(v);
       this.change('input', v);
@@ -54,19 +46,11 @@ function inputEventHandler(evt) {
     }
   } else {
     this.inputText = v;
-    if (validator) {
-      if (validator.type === 'list') {
-        suggest.search(v);
-      } else {
-        suggest.hide();
-      }
+    const start = v.lastIndexOf('=');
+    if (start !== -1) {
+      suggest.search(v.substring(start + 1));
     } else {
-      const start = v.lastIndexOf('=');
-      if (start !== -1) {
-        suggest.search(v.substring(start + 1));
-      } else {
-        suggest.hide();
-      }
+      suggest.hide();
     }
     textlineEl.html(v);
     this.change('input', v);
@@ -92,25 +76,20 @@ function setText(text, position) {
 }
 
 function suggestItemClick(it) {
-  const { inputText, validator } = this;
+  const { inputText} = this;
   let position = 0;
-  if (validator && validator.type === 'list') {
-    this.inputText = it;
-    position = this.inputText.length;
+  const start = inputText.lastIndexOf('=');
+  const sit = inputText.substring(0, start + 1);
+  let eit = inputText.substring(start + 1);
+  if (eit.indexOf(')') !== -1) {
+    eit = eit.substring(eit.indexOf(')'));
   } else {
-    const start = inputText.lastIndexOf('=');
-    const sit = inputText.substring(0, start + 1);
-    let eit = inputText.substring(start + 1);
-    if (eit.indexOf(')') !== -1) {
-      eit = eit.substring(eit.indexOf(')'));
-    } else {
-      eit = '';
-    }
-    this.inputText = `${sit + it.key}(`;
-    // console.log('inputText:', this.inputText);
-    position = this.inputText.length;
-    this.inputText += `)${eit}`;
+    eit = '';
   }
+  this.inputText = `${sit + it.key}(`;
+  // console.log('inputText:', this.inputText);
+  position = this.inputText.length;
+  this.inputText += `)${eit}`;
   setText.call(this, this.inputText, position);
 }
 
@@ -216,30 +195,13 @@ export default class Editor {
     }
   }
 
-  setCell(cell, validator) {
+  setCell(cell) {
     if (cell && cell.editable === false) return;
-
-    // console.log('::', validator);
     const { el, datepicker, suggest } = this;
     el.show();
     this.cell = cell;
     const text = (cell && cell.text) || '';
     this.setText(text);
-
-    this.validator = validator;
-    if (validator) {
-      const { type } = validator;
-      if (type === 'date') {
-        datepicker.show();
-        if (!/^\s*$/.test(text)) {
-          datepicker.setValue(text);
-        }
-      }
-      if (type === 'list') {
-        suggest.setItems(validator.values());
-        suggest.search('');
-      }
-    }
   }
 
   setText(text) {

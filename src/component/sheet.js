@@ -452,7 +452,7 @@ function editorSet() {
     const {editor, data} = this;
     if (data.settings.mode === 'read') return;
     editorSetOffset.call(this);
-    editor.setCell(data.getSelectedCell(), data.getSelectedValidator());
+    editor.setCell(data.getSelectedCell());
     clearClipboard.call(this);
 }
 
