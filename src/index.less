@@ -40,8 +40,8 @@
 @input-box-shadow: inset 0 1px 2px hsla(0,0%,4%,.06);
 @border-radius: 2px;
 @form-field-height: 30px;
-@primary-color: @blue-color;
-@primary-hover-color: @blue-hover-color;
+@primary-color: @green-color;
+@primary-hover-color: @green-hover-color;
 
 // method
 .type-primary() {
@@ -252,7 +252,7 @@ body {
   z-index: 11;
 
   .@{css-prefix}-resizer-hover {
-    background-color: rgba(75, 137, 255, .25);
+    background-color: fade(@primary-color,75%);
   }
   .@{css-prefix}-resizer-line {
     position: absolute;
@@ -261,7 +261,7 @@ body {
   &.horizontal {
     cursor: row-resize;
     .@{css-prefix}-resizer-line {
-      border-bottom: 2px dashed rgb(75, 137, 255);
+      border-bottom: 2px dashed @primary-color;
       left: 0;
       bottom: 0;
     }
@@ -269,7 +269,7 @@ body {
   &.vertical {
     cursor: col-resize;
     .@{css-prefix}-resizer-line {
-      border-right: 2px dashed rgb(75, 137, 255);
+      border-right: 2px dashed @primary-color;
       top: 0;
       right: 0;
     }
@@ -345,8 +345,8 @@ body {
   }
   .@{css-prefix}-selector-area {
     position: absolute;
-    border: 2px solid rgb(75, 137, 255);
-    background: rgba(75, 137, 255, .1);
+    border: 2px solid @primary-color;
+    background: rgba(0, 0, 0, .1);
     z-index: 5;
   }
   .@{css-prefix}-selector-clipboard, .@{css-prefix}-selector-autofill {
@@ -355,7 +355,7 @@ body {
     z-index: 100;
   }
   .@{css-prefix}-selector-clipboard {
-    border: 2px dashed rgb(75, 137, 255);
+    border: 2px dashed @primary-color;
   }
   .@{css-prefix}-selector-autofill {
     border: 1px dashed rgba(0, 0, 0, .45); // #606060; // rgba(0, 0, 0, .2);
@@ -367,10 +367,11 @@ body {
     font-size: 0;
     height: 5px;
     width: 5px;
-    right: -5px;
-    bottom: -5px;
-    border: 2px solid rgb(255, 255, 255);
-    background: rgb(75, 137, 255);
+    right: -3px;
+    bottom: -3px;
+    background: @primary-color;
+    border-top: 1px solid white;
+    border-left: 1px solid white;
   }
 }
 .@{css-prefix}-editor {
@@ -378,7 +379,7 @@ body {
   .@{css-prefix}-editor-area {
     position: absolute;
     text-align: left;
-    border: 2px solid rgb(75, 137, 255);
+    border: 2px solid @primary-color;
     line-height: 0;
     z-index: 100;
     pointer-events: auto;
@@ -782,7 +783,7 @@ body {
 
       &.active, &.active:hover {
         background: #ecf6fd;
-        color: #2185D0;
+        color: @primary-color;
       }
 
       &.disabled {
@@ -869,8 +870,8 @@ body {
     box-shadow: inset 0 1px 2px hsla(0,0%,4%,.06);
 
     &:focus {
-      border-color: rgb(75, 137, 255);
-      box-shadow: inset 0 1px 2px rgba(75, 137, 255, .2);
+      border-color: @primary-color;
+      box-shadow: inset 0 1px 2px fade(@primary-color,80%);
     }
   }
 }

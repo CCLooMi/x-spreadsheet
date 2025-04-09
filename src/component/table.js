@@ -13,7 +13,7 @@ const tableFixedHeaderCleanStyle = { fillStyle: '#f4f5f8' };
 const tableGridStyle = {
   fillStyle: '#fff',
   lineWidth: thinLineWidth,
-  strokeStyle: '#e6e6e6',
+  strokeStyle: 'rgba(0,0,0,0.2)',
 };
 function tableFixedHeaderStyle() {
   return {
@@ -22,7 +22,7 @@ function tableFixedHeaderStyle() {
     font: `500 ${npx(12)}px Source Sans Pro`,
     fillStyle: '#585757',
     lineWidth: thinLineWidth(),
-    strokeStyle: '#e6e6e6',
+    strokeStyle: 'rgba(0,0,0,0.2)',
   };
 }
 
@@ -194,7 +194,7 @@ function renderContent(viewRange, fw, fh, tx, ty) {
 function renderSelectedHeaderCell(x, y, w, h) {
   const { draw } = this;
   draw.save();
-  draw.attr({ fillStyle: 'rgba(75, 137, 255, 0.08)' })
+  draw.attr({ fillStyle: 'rgba(0, 0, 0, 0.08)' })
     .fillRect(x, y, w, h);
   draw.restore();
 }
@@ -313,7 +313,7 @@ function renderFreezeHighlightLine(fw, fh, ftw, fth) {
   const theight = data.viewHeight() - fh;
   draw.save()
     .translate(fw, fh)
-    .attr({ strokeStyle: 'rgba(75, 137, 255, .6)' });
+    .attr({ strokeStyle: 'rgba(0,0,0, .6)' });
   draw.line([0, fth], [twidth, fth]);
   draw.line([ftw, 0], [ftw, theight]);
   draw.restore();
