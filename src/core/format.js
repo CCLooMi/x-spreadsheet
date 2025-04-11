@@ -89,14 +89,6 @@ const baseFormats = [
     render: formatStringRender,
   },
 ];
-
-// const formats = (ary = []) => {
-//   const map = {};
-//   baseFormats.concat(ary).forEach((f) => {
-//     map[f.key] = f;
-//   });
-//   return map;
-// };
 const formatm = {};
 baseFormats.forEach((f) => {
   formatm[f.key] = f;

@@ -29,6 +29,7 @@ import { h } from '../element';
 import { cssPrefix } from '../../config';
 import { bind } from '../event';
 import {watchInDomTree,watchDomResize} from "../../core/util";
+import Sharp from "./sharp";
 
 function buildDivider() {
   return h('div', `${cssPrefix}-toolbar-divider`);
@@ -152,6 +153,7 @@ export default class Toolbar {
         this.freezeEl = new Freeze(this.targetEl),
         this.autofilterEl = new Autofilter(this.targetEl),
         this.formulaEl = new Formula(this.targetEl),
+        this.sharpEl = new Sharp(this.targetEl),
       ],
     ];
 

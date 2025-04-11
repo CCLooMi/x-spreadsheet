@@ -19,6 +19,7 @@ import {xtoast} from './message';
 import {cssPrefix} from '../config';
 import {formulas} from '../core/formula';
 import {watchDomResize, watchInDomTree, attacheEvent, clickOutside} from '../core/util';
+import {xy2expr} from "../core/alphabet";
 
 /**
  * @desc throttle fn
@@ -398,7 +399,6 @@ function overlayerMousedown(evt) {
             return;
         }
     }
-
     // console.log('ri:', ri, ', ci:', ci);
     if (!evt.shiftKey) {
         // console.log('selectorSetStart:::');
@@ -406,6 +406,16 @@ function overlayerMousedown(evt) {
             selector.showAutofill(ri, ci);
         } else {
             selectorSet.call(this, false, ri, ci);
+            let cell = data.getCell(ri,ci);
+            if(cell?.type==='select'){
+                if (left + width - 20 < offsetX && top + height - 20 < offsetY) {
+                    this.trigger('select',cell, ri, ci,nv=> {
+                        cell.text=nv;
+                        table.render();
+                    });
+                    return;
+                }
+            }
         }
 
         // mouse move up
@@ -557,36 +567,61 @@ function toolbarChange(type, value) {
     const {data} = this;
     if (type === 'undo') {
         this.undo();
-    } else if (type === 'redo') {
+        return;
+    }
+    if (type === 'redo') {
         this.redo();
-    } else if (type === 'print') {
+        return;
+    }
+    if (type === 'print') {
         this.print.preview();
-    } else if (type === 'paintformat') {
+        return;
+    }
+    if (type === 'paintformat') {
         if (value === true) copy.call(this);
         else clearClipboard.call(this);
-    } else if (type === 'clearformat') {
+        return;
+    }
+    if (type === 'clearformat') {
         insertDeleteRowColumn.call(this, 'delete-cell-format');
-    } else if (type === 'link') {
+        return;
+    }
+    if (type === 'link') {
         // link
-    } else if (type === 'chart') {
+        return;
+    }
+    if (type === 'chart') {
         // chart
-    } else if (type === 'autofilter') {
+        return;
+    }
+    if (type === 'sharp') {
+        // sharp
+        const {table} = this;
+        let cells= data.getCells(data.selector);
+        this.trigger('sharp',cells,()=>{
+            table.render();
+        });
+        return;
+    }
+    if (type === 'autofilter') {
         // filter
         autofilter.call(this);
-    } else if (type === 'freeze') {
+        return;
+    }
+    if (type === 'freeze') {
         if (value) {
             const {ri, ci} = data.selector;
             this.freeze(ri, ci);
-        } else {
-            this.freeze(0, 0);
+            return;
         }
-    } else {
-        data.setSelectedCellAttr(type, value);
-        if (type === 'formula' && !data.selector.multiple()) {
-            editorSet.call(this);
-        }
-        sheetReset.call(this);
+        this.freeze(0, 0);
+        return;
     }
+    data.setSelectedCellAttr(type, value);
+    if (type === 'formula' && !data.selector.multiple()) {
+        editorSet.call(this);
+    }
+    sheetReset.call(this);
 }
 
 function sortFilterChange(ci, order, operator, value) {

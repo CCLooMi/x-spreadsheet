@@ -641,9 +641,13 @@ export default class DataProxy {
       if (property === 'merge') {
         if (value) this.merge();
         else this.unmerge();
-      } else if (property === 'border') {
+        return;
+      }
+      if (property === 'border') {
         setStyleBorders.call(this, value);
-      } else if (property === 'formula') {
+        return;
+      }
+      if (property === 'formula') {
         // console.log('>>>', selector.multiple());
         const { ri, ci, range } = selector;
         if (selector.multiple()) {
@@ -660,37 +664,42 @@ export default class DataProxy {
             const cell = rows.getCellOrNew(ri, eci + 1);
             cell.text = `=${value}(${xy2expr(sci, ri)}:${xy2expr(eci, ri)})`;
           }
-        } else {
-          const cell = rows.getCellOrNew(ri, ci);
-          cell.text = `=${value}()`;
+          return;
         }
-      } else {
-        selector.range.each((ri, ci) => {
-          const cell = rows.getCellOrNew(ri, ci);
-          let cstyle = {};
-          if (cell.style !== undefined) {
-            cstyle = helper.cloneDeep(styles[cell.style]);
-          }
-          if (property === 'format') {
-            cstyle.format = value;
-            cell.style = this.addStyle(cstyle);
-          } else if (property === 'font-bold' || property === 'font-italic'
+        const cell = rows.getCellOrNew(ri, ci);
+        cell.text = `=${value}()`;
+        return;
+      }
+      selector.range.each((ri, ci) => {
+        const cell = rows.getCellOrNew(ri, ci);
+        let cstyle = {};
+        if (cell.style !== undefined) {
+          cstyle = helper.cloneDeep(styles[cell.style]);
+        }
+        if (property === 'format') {
+          cstyle.format = value;
+          cell.style = this.addStyle(cstyle);
+          return;
+        }
+        if (property === 'font-bold' || property === 'font-italic'
             || property === 'font-name' || property === 'font-size') {
-            const nfont = {};
-            nfont[property.split('-')[1]] = value;
-            cstyle.font = Object.assign(cstyle.font || {}, nfont);
-            cell.style = this.addStyle(cstyle);
-          } else if (property === 'strike' || property === 'textwrap'
+          const nfont = {};
+          nfont[property.split('-')[1]] = value;
+          cstyle.font = Object.assign(cstyle.font || {}, nfont);
+          cell.style = this.addStyle(cstyle);
+          return;
+        }
+        if (property === 'strike' || property === 'textwrap'
             || property === 'underline'
             || property === 'align' || property === 'valign'
             || property === 'color' || property === 'bgcolor') {
-            cstyle[property] = value;
-            cell.style = this.addStyle(cstyle);
-          } else {
-            cell[property] = value;
-          }
-        });
-      }
+          cstyle[property] = value;
+          cell.style = this.addStyle(cstyle);
+          return;
+        }
+        cell[property] = value;
+        return;
+      });
     });
   }
 
@@ -1061,6 +1070,12 @@ export default class DataProxy {
 
   getCell(ri, ci) {
     return this.rows.getCell(ri, ci);
+  }
+  getCells(selector){
+    const{rows} = this;
+    let cells = [];
+    selector.range.each((ri, ci)=>cells.push(rows.getCellOrNew(ri, ci)));
+    return cells;
   }
 
   getCellTextOrDefault(ri, ci) {

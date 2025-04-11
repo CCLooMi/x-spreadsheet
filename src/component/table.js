@@ -19,7 +19,7 @@ function tableFixedHeaderStyle() {
   return {
     textAlign: 'center',
     textBaseline: 'middle',
-    font: `500 ${npx(12)}px Source Sans Pro`,
+    font: `500 ${npx(16)}px Source Sans Pro`,
     fillStyle: '#585757',
     lineWidth: thinLineWidth(),
     strokeStyle: 'rgba(0,0,0,0.2)',
@@ -32,22 +32,6 @@ function getDrawBox(data, rindex, cindex, yoffset = 0) {
   } = data.cellRect(rindex, cindex);
   return new DrawBox(left, top + yoffset, width, height, cellPaddingWidth);
 }
-/*
-function renderCellBorders(bboxes, translateFunc) {
-  const { draw } = this;
-  if (bboxes) {
-    const rset = new Set();
-    // console.log('bboxes:', bboxes);
-    bboxes.forEach(({ ri, ci, box }) => {
-      if (!rset.has(ri)) {
-        rset.add(ri);
-        translateFunc(ri);
-      }
-      draw.strokeBorders(box);
-    });
-  }
-}
-*/
 
 export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
   const { sortedRowMap, rows, cols } = data;
@@ -72,34 +56,36 @@ export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
     draw.strokeBorders(dbox);
   }
 
-  draw.rect(dbox, () => {
-    // 检查是否有图片
-    if (cell.image) {
-      // 渲染图片
-      draw.image(cell.image, dbox, {
-        align: style.align,
-        valign: style.valign,
-        scale: cell.imageScale || 1,
-        keepAspect: cell.keepAspect !== false
-      });
+  draw.rect(dbox, function () {
+    try{
+      // 检查是否有图片
+      if (cell.image) {
+        // 渲染图片
+        draw.image(cell.image, dbox, {
+          align: style.align,
+          valign: style.valign,
+          keepAspect: cell.keepAspect !== false
+        });
 
-      // 如果有文字，在图片下方渲染
-      if (cell.text) {
-        const textDbox = new DrawBox(
-            dbox.x,
-            dbox.y + dbox.height * 0.7, // 图片占据70%高度
-            dbox.width,
-            dbox.height * 0.3, // 文字占据30%高度
-            cellPaddingWidth
-        );
-        renderCellText(draw, data, cell, textDbox, style);
+        // 如果有文字，在图片下方渲染
+        if (cell.text) {
+          const textDbox = new DrawBox(
+              dbox.x,
+              dbox.y + dbox.height * 0.7, // 图片占据70%高度
+              dbox.width,
+              dbox.height * 0.3, // 文字占据30%高度
+              cellPaddingWidth
+          );
+          renderCellText(draw, data, cell, textDbox, style);
+        }
+        return;
       }
-    } else {
       // 没有图片，正常渲染文本
       renderCellText(draw, data, cell, dbox, style);
-    }
-    if (frozen) {
-      draw.frozen(dbox);
+    }finally {
+      if (frozen) {
+        draw.frozen(dbox);
+      }
     }
   });
 }
@@ -126,6 +112,9 @@ function renderCellText(draw, data, cell, dbox, style) {
     strike: style.strike,
     underline: style.underline,
   }, style.textwrap);
+  if(cell.type==='select'){
+    draw.dropdown(dbox);
+  }
 }
 
 function renderAutofilter(viewRange) {
