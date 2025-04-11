@@ -109,7 +109,7 @@
           rows,
         }, { name: 'sheet-test', rows: rows10 }]).change((cdata) => {
           // console.log(cdata);
-          // console.log('>>>', xs.getData());
+          console.log('>>>', xs.getData());
         });
 
       xs.on('cell-selected', (cell, ri, ci) => {
@@ -123,7 +123,7 @@
         cells.forEach(ci=>ci.type='select');
         cb();
       }).on('cell-edited', (text, ri, ci) => {
-          // console.log('text:', text, ', ri: ', ri, ', ci:', ci);
+          console.log('text:', text, ', ri: ', ri, ', ci:', ci);
         }).on('pasted-clipboard', (data) => {
           // console.log('>>>> data is ', data);
         });

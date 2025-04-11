@@ -410,8 +410,11 @@ function overlayerMousedown(evt) {
             if(cell?.type==='select'){
                 if (left + width - 20 < offsetX && top + height - 20 < offsetY) {
                     this.trigger('select',cell, ri, ci,nv=> {
-                        cell.text=nv;
-                        table.render();
+                        data.changeData(()=>{
+                            cell.text=nv;
+                            this.trigger('cell-edited',nv,ri,ci);
+                            table.render();
+                        })
                     });
                     return;
                 }
@@ -599,7 +602,7 @@ function toolbarChange(type, value) {
         const {table} = this;
         let cells= data.getCells(data.selector);
         this.trigger('sharp',cells,()=>{
-            table.render();
+            data.changeData(()=>table.render());
         });
         return;
     }
