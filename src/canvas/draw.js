@@ -212,7 +212,6 @@ class Draw {
     const {
       align = 'left',
       valign = 'top',
-      scale = 1,
       keepAspect = true
     } = attr;
 
@@ -229,12 +228,12 @@ class Draw {
     // 计算图片位置和尺寸
     const boxWidth = box.innerWidth();
     const boxHeight = box.innerHeight();
-    let imgWidth = img.width * scale;
-    let imgHeight = img.height * scale;
+    let imgWidth = img.width;
+    let imgHeight = img.height;
 
     // 保持宽高比
     if (keepAspect) {
-      const ratio = Math.min(boxWidth / img.width, boxHeight / img.height) * scale;
+      const ratio = Math.min(boxWidth / img.width, boxHeight / img.height);
       imgWidth = img.width * ratio;
       imgHeight = img.height * ratio;
     }
