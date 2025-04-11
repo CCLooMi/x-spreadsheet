@@ -38,6 +38,11 @@
             2: { text: 'haha', merge: [1, 1] },
           }
         },
+        5:{
+          cells:{
+            2: { text: 'select test', type:'select'},
+          }
+        },
         8: {
           cells: {
             8: { text: 'border test', style: 0 },
@@ -54,7 +59,7 @@
       const sd = containerEl.attachShadow({ mode: 'open' });
       let lk=document.querySelector('link');
       sd.append(lk);
-      var xs = x_spreadsheet(sd, {
+      const xs = x_spreadsheet(sd, {
         showToolbar: true,
         showGrid: true,
         showBottomBar: true,
@@ -104,20 +109,28 @@
           rows,
         }, { name: 'sheet-test', rows: rows10 }]).change((cdata) => {
           // console.log(cdata);
-          console.log('>>>', xs.getData());
+          // console.log('>>>', xs.getData());
         });
 
       xs.on('cell-selected', (cell, ri, ci) => {
-          console.log('cell:', cell, ', ri:', ri, ', ci:', ci);
-        }).on('cell-edited', (text, ri, ci) => {
-          console.log('text:', text, ', ri: ', ri, ', ci:', ci);
+          let obj = {cell:cell,ri:ri,ci:ci,style:xs.cellStyle(ri, ci)};
+          console.log(JSON.stringify(obj,' ',2));
+        }).on('select',function (cell,ri,ci,cb) {
+        console.log('onSelect!',cell.text);
+        setTimeout(()=>cb('Selected Value'),0);
+      }).on('sharp',function (cells,cb) {
+        console.log('onSharp!',cells);
+        cells.forEach(ci=>ci.type='select');
+        cb();
+      }).on('cell-edited', (text, ri, ci) => {
+          // console.log('text:', text, ', ri: ', ri, ', ci:', ci);
         }).on('pasted-clipboard', (data) => {
-          console.log('>>>> data is ', data);
+          // console.log('>>>> data is ', data);
         });
-      setTimeout(() => {
-        // xs.loadData([{ rows }]);
-        xs.cellText(14, 3, 'cell-text').reRender();
-        console.log('cell(8, 8):', xs.cell(8, 8));
-        console.log('cellStyle(8, 8):', xs.cellStyle(8, 8));
-      }, 5000);
+      // setTimeout(() => {
+      //   // xs.loadData([{ rows }]);
+      //   xs.cellText(14, 3, 'cell-text').reRender();
+      //   console.log('cell(8, 8):', xs.cell(8, 8));
+      //   console.log('cellStyle(8, 8):', xs.cellStyle(8, 8));
+      // }, 5000);
     }</script></body></html>

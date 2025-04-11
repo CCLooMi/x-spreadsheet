@@ -62,7 +62,8 @@ const message = {
     freeze: '冻结',
     autofilter: '自动筛选',
     formula: '函数',
-    more: '更多'
+    more: '更多',
+    sharp: '触发sharp事件'
   },
   contextmenu: {
     copy: '复制',
