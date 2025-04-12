@@ -409,10 +409,15 @@ function overlayerMousedown(evt) {
             let cell = data.getCell(ri,ci);
             if(cell?.type==='select'){
                 if (left + width - 20 < offsetX && top + height - 20 < offsetY) {
-                    this.trigger('select',cell, ri, ci,nv=> {
+                    let topCell = data.getCell(0,ci);
+                    this.trigger('select',[topCell,cell], ri, ci,nv=> {
                         data.changeData(()=>{
                             cell.text=nv;
-                            this.trigger('cell-edited',nv,ri,ci);
+                            this.trigger('cell-edited',nv,ri,ci,cell);
+                            let bottomCell = data.getCellOrNew(ri+1,ci);
+                            if(bottomCell.type!=='select'){
+                                bottomCell.type='select';
+                            }
                             table.render();
                         })
                     });
@@ -532,7 +537,8 @@ function dataSetCellText(text, state = 'finished') {
     if (state === 'finished') {
         table.render();
     } else {
-        this.trigger('cell-edited', text, ri, ci);
+        let cell = data.getCell(ri,ci);
+        this.trigger('cell-edited', text, ri, ci, cell);
     }
 }
 
@@ -973,8 +979,8 @@ export default class Sheet {
         selectorSet.call(this, false, 0, 0);
     }
 
-    on(eventName, func) {
-        this.eventMap.on(eventName, func);
+    on(eventName, func, getDsp) {
+        this.eventMap.on(eventName, func, getDsp);
         return this;
     }
 

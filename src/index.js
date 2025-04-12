@@ -115,6 +115,10 @@ class Spreadsheet {
     return this.datas[sheetIndex].getCell(ri, ci);
   }
 
+  getCell(ri,ci,sheetIndex=0){
+    return this.datas[sheetIndex].getCellOrNew(ri,ci);
+  }
+
   cellStyle(ri, ci, sheetIndex = 0) {
     return this.datas[sheetIndex].getCellStyle(ri, ci);
   }
@@ -124,8 +128,8 @@ class Spreadsheet {
     return this;
   }
 
-  on(eventName, func) {
-    this.sheet.on(eventName, func);
+  on(eventName, func, getDsp) {
+    this.sheet.on(eventName, func, getDsp);
     return this;
   }
 

@@ -138,6 +138,8 @@
         console.log('onSharp!',cells);
         cells.forEach(ci=>ci.type='select');
         cb();
+      }).on('change',function (){
+        console.log('this on change event!',arguments);
       }).on('cell-edited', (text, ri, ci) => {
           console.log('text:', text, ', ri: ', ri, ', ci:', ci);
         }).on('pasted-clipboard', (data) => {

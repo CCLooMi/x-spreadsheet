@@ -66,19 +66,23 @@ export function bindTouch(target, { move, end }) {
 export function createEventEmitter() {
   const listeners = new Map();
 
-  function on(eventName, callback) {
-    const push = () => {
-      const currentListener = listeners.get(eventName);
-      return (Array.isArray(currentListener)
-          && currentListener.push(callback))
-          || false;
-    };
-
-    const create = () => listeners.set(eventName, [].concat(callback));
-
-    return (listeners.has(eventName)
-        && push())
-        || create();
+  function on(eventName, callback, getDsp) {
+    try{
+      const push = () => {
+        const currentListener = listeners.get(eventName);
+        return (Array.isArray(currentListener)
+                && currentListener.push(callback))
+            || false;
+      };
+      const create = () => listeners.set(eventName, [].concat(callback));
+      return (listeners.has(eventName)
+              && push())
+          || create();
+    }finally {
+      if(getDsp instanceof Function){
+        getDsp(()=>removeListener(eventName,callback));
+      }
+    }
   }
 
   function fire(eventName, args) {

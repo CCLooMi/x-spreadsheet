@@ -1071,6 +1071,9 @@ export default class DataProxy {
   getCell(ri, ci) {
     return this.rows.getCell(ri, ci);
   }
+  getCellOrNew(ri,ci){
+    return this.rows.getCellOrNew(ri,ci);
+  }
   getCells(selector){
     const{rows} = this;
     let cells = [];
